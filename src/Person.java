@@ -20,7 +20,7 @@ public class Person {
         this.name = name;
         this.id = id;
         this.gender = gender.equals("M") ? "MALE":"FEMALE";
-        this.genderPref = genderPref.equals("S") ? "STRAIGHT": genderPref.equals("G") ? "GAY":"BI";
+        //this.genderPref = genderPref.equals("S") ? "STRAIGHT": genderPref.equals("G") ? "GAY":"BI";
     }
 
     public ArrayList<String> getQualities() {
@@ -66,10 +66,6 @@ public class Person {
         return name;
     }
 
-    public String getGenderPref() {
-
-        return genderPref;
-    }
 
     public void matchMake(ArrayList<Person> list){
         compatiblePeople = new ArrayList<Maker>();

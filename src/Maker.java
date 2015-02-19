@@ -44,8 +44,8 @@ public class Maker implements Comparable {
 
         }
 
-        double scoreA = totalA/maxB;
-        double scoreB = totalB/maxA;
+        double scoreA = totalA/maxB; // 9%
+        double scoreB = totalB/maxA; // 98%
 
         compatibility = Math.sqrt(scoreA * scoreB);
 
