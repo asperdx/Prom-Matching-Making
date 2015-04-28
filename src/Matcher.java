@@ -14,8 +14,8 @@ public class Matcher {
         ArrayList<Person> people = new ArrayList<Person>();
         while (file.hasNextLine()){
             String[] split = file.nextLine().split(",");
-            Person temp = new Person(split[0],Integer.parseInt(split[1]),
-                    split[split.length-1].charAt(1)+"",split[split.length-1].charAt(0)+"");
+            Person temp = new Person(split[0],split[1],Integer.parseInt(split[2]),
+                    split[3], split[4]);
             temp.setAnswersImportance(split);
             people.add(temp);
         }
