@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -6,7 +7,8 @@ import java.util.Collections;
  */
 public class Person {
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String gender;
     private String genderPref;
     private ArrayList<String> qualities;
@@ -16,11 +18,23 @@ public class Person {
     public int id;
 
 
-    public Person(String name,int id, String gender, String genderPref){
-        this.name = name;
+    public Person(String firstName,String lastName,int id, String gender, String seeking){
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.id = id;
-        this.gender = gender.equals("M") ? "MALE":"FEMALE";
-        //this.genderPref = genderPref.equals("S") ? "STRAIGHT": genderPref.equals("G") ? "GAY":"BI";
+        this.gender = gender.equals("Male") ? "MALE":"FEMALE";
+        String temp = seeking;
+
+        if (temp.equals("Either"))
+            genderPref = "BI";
+        else if (this.gender.equals("MALE") && temp.equals("Guy"))
+            genderPref = "GAY";
+        else if (this.gender.equals("MALE") && temp.equals("Girl"))
+            genderPref = "STRAIGHT";
+        else if (this.gender.equals("FEMALE") && temp.equals("Guy"))
+            genderPref = "STRAIGHT";
+        else if (this.gender.equals("FEMALE") && temp.equals("Girl"))
+            genderPref = "GAY";
     }
 
     public ArrayList<String> getQualities() {
@@ -31,21 +45,21 @@ public class Person {
         answers = new ArrayList<String>();
         importance = new ArrayList<Integer>();
         qualities = new ArrayList<String>();
-        for (int i = 2; i < array.length-1; i++) {
+        for (int i = 4; i < array.length; i++) {
             if (i % 3 == 1){
                 switch (array[i].charAt(0)){
                     case '1': importance.add(0); break;
-                    case '2': importance.add(1); break;
+                    case '2': importance.add(5); break;
                     case '3': importance.add(10); break;
                     case '4': importance.add(50); break;
-                    case '5': importance.add(250); break;
+                    case '5': importance.add(150); break;
                     default: break;
                 }
             }
-            else if (i % 3 == 0)
-                answers.add(array[i]);
-            else
+            else if (i % 3 == 2)
                 qualities.add(array[i]);
+            else
+                answers.add(array[i]);
 
         }
     }
@@ -62,19 +76,49 @@ public class Person {
         return importance;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
+    }
+    public String getLastName() {
+        return lastName;
     }
 
+    public String getName(){
+        return firstName + " " + lastName;
+    }
+
+    public String getGenderPref() {
+        return genderPref;
+    }
 
     public void matchMake(ArrayList<Person> list){
         compatiblePeople = new ArrayList<Maker>();
         for (Person x: list){
             if (id!=x.id){
-                if (!gender.equals(x.getGender())) {
-                    Maker temp = new Maker(this, x);
-                    temp.Match();
-                    compatiblePeople.add(temp);
+                if (genderPref.equals("STRAIGHT")) {
+                    if (!gender.equals(x.getGender())) {
+                        if (x.getGenderPref().equals("STRAIGHT") || x.getGenderPref().equals("BI")) {
+                            Maker temp = new Maker(this, x);
+                            temp.Match();
+                            compatiblePeople.add(temp);
+                        }
+                    }
+                }else if (genderPref.equals("GAY")) {
+                    if (gender.equals(x.getGender())) {
+                        if (x.getGenderPref().equals("GAY") || x.getGenderPref().equals("BI")) {
+                            Maker temp = new Maker(this, x);
+                            temp.Match();
+                            compatiblePeople.add(temp);
+                        }
+                    }
+                }else if (genderPref.equals("BI")) {
+                    if((x.getGenderPref().equals("STRAIGHT") && !gender.equals(x.getGender())) || (
+                            x.getGenderPref().equals("GAY") && gender.equals(x.getGender())) ||
+                            (x.getGenderPref().equals("BI"))) {
+                        Maker temp = new Maker(this, x);
+                        temp.Match();
+                        compatiblePeople.add(temp);
+                    }
                 }
             }
         }
@@ -82,13 +126,25 @@ public class Person {
     }
 
     public void results(){
-        for (int i = 0; i < 10 && i < compatiblePeople.size(); i++) {
+        String out = "";
+        for (int i = 0; i < 3 && i < compatiblePeople.size(); i++) {
             System.out.println(compatiblePeople.get(i).toString());
+            out+=compatiblePeople.get(i).toString()+"\n";
+
         }
+
+        try {
+            PrintWriter pw = new PrintWriter("results/"+id+".txt");
+            pw.print(out);
+            pw.close();
+        }catch (Exception e){
+
+        }
+
     }
 
     @Override
     public String toString() {
-        return "Name: " + name +" Gender: " + gender;// + " Orientation: " + genderPref;
+        return "Name: " + firstName +" " + lastName +" Gender: " + gender;// + " Orientation: " + genderPref;
     }
 }
